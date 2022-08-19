@@ -1,11 +1,15 @@
 #ifndef JSONPROCESS_H
 #define JSONPROCESS_H
-
-
+#include <QVector>
+#include <QJsonDocument>
+#include <QJsonParseError>
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QJsonArray>
 class JsonProcess
 {
 public:
-    JsonProcess();
+    static QVector<double> toDoubleArray(QJsonObject, QString);
 };
 
 #endif // JSONPROCESS_H
