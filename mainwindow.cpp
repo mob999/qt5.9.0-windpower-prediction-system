@@ -10,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     lineChart = new QChart();
     pieChart = new QChart();
     connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::onPushButtonClicked);
+    ui->pushButton->setStyleSheet("background-color:white");
+    ui->pushButton_2->setStyleSheet("background-color:white");
 }
 
 MainWindow::~MainWindow()
@@ -61,6 +63,7 @@ void MainWindow::onPushButtonClicked()
     QVector<double> realData = JsonProcess::toDoubleArray(res, "realData");
     initLineChart(produceData, realData);
     ui->graphicsView->setChart(lineChart);
+
     initPieChart(100);
     ui->graphicsView_2->setChart(pieChart);
     ui->graphicsView_2->setRenderHint(QPainter::Antialiasing);
