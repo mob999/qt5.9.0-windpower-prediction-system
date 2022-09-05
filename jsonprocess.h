@@ -10,6 +10,7 @@ class JsonProcess
 {
 public:
     static QVector<double> toDoubleArray(QJsonObject, QString);
+    static double getValue(QJsonObject, QString);
 };
 
 #endif // JSONPROCESS_H

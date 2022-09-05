@@ -4,7 +4,7 @@ ApiCaller::ApiCaller()
 {
     manage = new QNetworkAccessManager;
     connect(manage, &QNetworkAccessManager::finished, this, &ApiCaller::afterRequest);
-    baseUrl = "http://5b9c3ce.r2.cpolar.top";
+    baseUrl = "http://1f053083.r2.cpolar.top";
 }
 
 ApiCaller::~ApiCaller()

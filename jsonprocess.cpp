@@ -9,3 +9,8 @@ QVector<double> JsonProcess::toDoubleArray(QJsonObject obj, QString key)
     }
     return res;
 }
+
+double JsonProcess::getValue(QJsonObject obj, QString key)
+{
+    return obj[key].toDouble();
+}
