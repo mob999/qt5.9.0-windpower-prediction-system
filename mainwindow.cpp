@@ -31,6 +31,7 @@ MainWindow::~MainWindow()
     delete pieChart;
 }
 
+// BP曲线
 template<typename T>
 void MainWindow::initLineChart(QVector<T> arr1, QVector<T> arr2)
 {
