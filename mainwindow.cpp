@@ -19,6 +19,9 @@ MainWindow::MainWindow(QWidget *parent) :
     storageChart   = new QChart();
     energeChart    = new QChart();
     powerChart     = new QChart();
+    storagePieChart= new QChart();
+    energePieChart = new QChart();
+    powerPieChart  = new QChart();
     connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::onPushButtonClicked);
     connect(ui->windDataButton, &QPushButton::clicked, this, &MainWindow::onWindDataButtonClicked);
     connect(ui->test2button, &QPushButton::clicked, this, &MainWindow::onTestButtonClicked);
@@ -223,7 +226,7 @@ void MainWindow::storageViewDisplay(const QJsonObject& obj)
 
 void MainWindow::energeViewDisplay(const QJsonObject& obj)
 {
-    QVector<double> energeData = JsonProcess::toDoubleArray(obj, "compressed_airpowerrData");
+    QVector<double> energeData = JsonProcess::toDoubleArray(obj, "compressed_airpowerData");
     initEnergeChart(energeData);
     ui->energeView->setChart(energeChart);
 }
@@ -232,7 +235,7 @@ void MainWindow::powerViewDisplay(const QJsonObject& obj)
 {
     QVector<double> powerData = JsonProcess::toDoubleArray(obj, "free_wheelpowerData");
     initPowerChart(powerData);
-    ui->powerproView->setChart(powerChart);
+    ui->powerView->setChart(powerChart);
 }
 
 void MainWindow::initStorageChart(QVector<double> arr)
@@ -285,9 +288,11 @@ void MainWindow::onTestButtonClicked()
         ApiCaller apiCaller;
         apiCaller.sendRequest("/storage");
         QJsonObject res = apiCaller.getResult();
+        qDebug() << res;
         storageViewDisplay(res);
         energeViewDisplay(res);
         powerViewDisplay(res);
+        threePieViewDisplay(res);
     });
 }
 
@@ -415,4 +420,51 @@ void MainWindow::initLineChart3(QVector<T> arr1, QVector<T> arr2, QVector<T> arr
 void MainWindow::onPcsBtnClicked()
 {
     system("test.exe");
+}
+
+void MainWindow::threePieViewDisplay(const QJsonObject& obj)
+{
+    QVector<double> arr1 = JsonProcess::toDoubleArray(obj, "storagepowerData"),
+                    arr2 = JsonProcess::toDoubleArray(obj, "compressed_airpowerData"),
+                    arr3 = JsonProcess::toDoubleArray(obj, "free_wheelpowerData");
+    initThreePieChart(arr1.back(), arr2.back(), arr3.back());
+    ui->storagePieView->setChart(storagePieChart);
+    ui->energePieView->setChart(energePieChart);
+    ui->powerPieView->setChart(powerPieChart);
+}
+
+void MainWindow::initThreePieChart(double val1, double val2, double val3)
+{
+    // storage
+    storagePieChart->removeAllSeries();
+    QPieSeries* series1 = new QPieSeries();
+    series1->setHoleSize(0.45);
+    series1->append("", val1);
+    series1->append("", 1000);
+    storagePieChart->legend()->hide();
+    storagePieChart->setTitle("1");
+    storagePieChart->addSeries(series1);
+    ui->storageText->setText(QString::number(val1));
+
+    // energe
+    energePieChart->removeAllSeries();
+    QPieSeries* series2 = new QPieSeries();
+    series2->setHoleSize(0.45);
+    series2->append("", val2);
+    series2->append("", 200);
+    energePieChart->legend()->hide();
+    energePieChart->setTitle("2");
+    energePieChart->addSeries(series2);
+    ui->energeText->setText(QString::number(val2));
+
+    // power
+    powerPieChart->removeAllSeries();
+    QPieSeries* series3 = new QPieSeries();
+    series3->setHoleSize(0.45);
+    series3->append("", val3);
+    series3->append("", 800);
+    powerPieChart->legend()->hide();
+    powerPieChart->setTitle("3");
+    powerPieChart->addSeries(series3);
+    ui->powerText->setText(QString::number(val3));
 }

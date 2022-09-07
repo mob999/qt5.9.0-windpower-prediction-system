@@ -69,6 +69,10 @@ public:
 
     void powerViewDisplay(const QJsonObject&);
 
+    void threePieViewDisplay(const QJsonObject&);
+
+    void initThreePieChart(double val1, double val2, double val3);
+
 private:
     Ui::MainWindow *ui;
     QChart* lineChart;
@@ -82,6 +86,9 @@ private:
     QChart* storageChart;
     QChart* energeChart;
     QChart* powerChart;
+    QChart* storagePieChart;
+    QChart* energePieChart;
+    QChart* powerPieChart;
     int timerId;
 
 public slots:

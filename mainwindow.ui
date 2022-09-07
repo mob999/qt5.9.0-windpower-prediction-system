@@ -504,17 +504,6 @@ p, li { white-space: pre-wrap; }
        </rect>
       </property>
      </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget_6">
-      <property name="geometry">
-       <rect>
-        <x>100</x>
-        <y>560</y>
-        <width>971</width>
-        <height>131</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_6"/>
-     </widget>
      <widget class="QPushButton" name="pcsBtn">
       <property name="geometry">
        <rect>
@@ -552,6 +541,102 @@ p, li { white-space: pre-wrap; }
       </property>
       <property name="text">
        <string>IMF分量检测</string>
+      </property>
+     </widget>
+     <widget class="QtCharts::QChartView" name="storagePieView">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>570</y>
+        <width>181</width>
+        <height>199</height>
+       </rect>
+      </property>
+      <property name="backgroundBrush">
+       <brush brushstyle="NoBrush">
+        <color alpha="255">
+         <red>255</red>
+         <green>170</green>
+         <blue>0</blue>
+        </color>
+       </brush>
+      </property>
+     </widget>
+     <widget class="QtCharts::QChartView" name="energePieView">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>440</x>
+        <y>570</y>
+        <width>181</width>
+        <height>199</height>
+       </rect>
+      </property>
+      <property name="backgroundBrush">
+       <brush brushstyle="NoBrush">
+        <color alpha="255">
+         <red>255</red>
+         <green>170</green>
+         <blue>0</blue>
+        </color>
+       </brush>
+      </property>
+     </widget>
+     <widget class="QtCharts::QChartView" name="powerPieView">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>670</x>
+        <y>570</y>
+        <width>181</width>
+        <height>199</height>
+       </rect>
+      </property>
+      <property name="backgroundBrush">
+       <brush brushstyle="NoBrush">
+        <color alpha="255">
+         <red>255</red>
+         <green>170</green>
+         <blue>0</blue>
+        </color>
+       </brush>
+      </property>
+     </widget>
+     <widget class="QTextBrowser" name="storageText">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>730</y>
+        <width>161</width>
+        <height>31</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QTextBrowser" name="energeText">
+      <property name="geometry">
+       <rect>
+        <x>450</x>
+        <y>730</y>
+        <width>161</width>
+        <height>31</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QTextBrowser" name="powerText">
+      <property name="geometry">
+       <rect>
+        <x>680</x>
+        <y>730</y>
+        <width>161</width>
+        <height>31</height>
+       </rect>
       </property>
      </widget>
     </widget>
