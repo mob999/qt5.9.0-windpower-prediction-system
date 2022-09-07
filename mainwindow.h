@@ -39,7 +39,17 @@ public:
 
     void initPieChart2(double value);
 
+    void initPieChartPro(double value);
+
+    void initPieChart2Pro(double value);
+
     void timerEvent(QTimerEvent *event) override;
+
+    void windDataDisplay();
+
+    void propowerDisplay();
+
+    void initPropowerChart(QVector<double> arr1, QVector<double> arr2);
 
 private:
     Ui::MainWindow *ui;
@@ -48,12 +58,16 @@ private:
     QChart* lineChart3;
     QChart* pieChart;
     QChart* pieChart2;
+    QChart* propowerChart;
+    QChart* pieChartPro;
+    QChart* pieChart2Pro;
     int timerId;
 
 public slots:
     void onPushButtonClicked();
     void onWindDataButtonClicked();
     void onTestButtonClicked();
+    void onPcsBtnClicked();
 };
 
 #endif // MAINWINDOW_H
