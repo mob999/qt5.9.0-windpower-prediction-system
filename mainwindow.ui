@@ -474,7 +474,7 @@ p, li { white-space: pre-wrap; }
      <attribute name="title">
       <string>储能调度</string>
      </attribute>
-     <widget class="QtCharts::QChartView" name="graphicsView_6">
+     <widget class="QtCharts::QChartView" name="storageView">
       <property name="geometry">
        <rect>
         <x>100</x>
@@ -484,7 +484,7 @@ p, li { white-space: pre-wrap; }
        </rect>
       </property>
      </widget>
-     <widget class="QtCharts::QChartView" name="graphicsView_7">
+     <widget class="QtCharts::QChartView" name="energeView">
       <property name="geometry">
        <rect>
         <x>740</x>
@@ -494,7 +494,7 @@ p, li { white-space: pre-wrap; }
        </rect>
       </property>
      </widget>
-     <widget class="QtCharts::QChartView" name="graphicsView_8">
+     <widget class="QtCharts::QChartView" name="powerView">
       <property name="geometry">
        <rect>
         <x>740</x>
@@ -525,7 +525,7 @@ p, li { white-space: pre-wrap; }
        </rect>
       </property>
       <property name="text">
-       <string>pcs</string>
+       <string>PCS连接</string>
       </property>
      </widget>
      <widget class="QPushButton" name="pushButton_7">
@@ -538,7 +538,7 @@ p, li { white-space: pre-wrap; }
        </rect>
       </property>
       <property name="text">
-       <string>PushButton</string>
+       <string>BMS数值显示</string>
       </property>
      </widget>
      <widget class="QPushButton" name="pushButton_8">
@@ -551,7 +551,7 @@ p, li { white-space: pre-wrap; }
        </rect>
       </property>
       <property name="text">
-       <string>PushButton</string>
+       <string>IMF分量检测</string>
       </property>
      </widget>
     </widget>

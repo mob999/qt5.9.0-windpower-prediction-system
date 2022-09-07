@@ -43,6 +43,12 @@ public:
 
     void initPieChart2Pro(double value);
 
+    void initStorageChart(QVector<double> arr);
+
+    void initEnergeChart(QVector<double> arr);
+
+    void initPowerChart(QVector<double> arr);
+
     void timerEvent(QTimerEvent *event) override;
 
     void windDataDisplay();
@@ -50,6 +56,18 @@ public:
     void propowerDisplay();
 
     void initPropowerChart(QVector<double> arr1, QVector<double> arr2);
+
+    QString pingYiViewDisplay();
+
+    void bodongViewDisplay();
+
+    void windDataProDisplay();
+
+    void storageViewDisplay(const QJsonObject&);
+
+    void energeViewDisplay(const QJsonObject&);
+
+    void powerViewDisplay(const QJsonObject&);
 
 private:
     Ui::MainWindow *ui;
@@ -61,6 +79,9 @@ private:
     QChart* propowerChart;
     QChart* pieChartPro;
     QChart* pieChart2Pro;
+    QChart* storageChart;
+    QChart* energeChart;
+    QChart* powerChart;
     int timerId;
 
 public slots:

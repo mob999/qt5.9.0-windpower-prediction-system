@@ -8,14 +8,17 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    lineChart  = new QChart();
-    lineChart2 = new QChart();
-    lineChart3 = new QChart();
-    pieChart   = new QChart();
-    pieChart2  = new QChart();
-    pieChartPro   = new QChart();
-    pieChart2Pro  = new QChart();
-    propowerChart = new QChart();
+    lineChart      = new QChart();
+    lineChart2     = new QChart();
+    lineChart3     = new QChart();
+    pieChart       = new QChart();
+    pieChart2      = new QChart();
+    pieChartPro    = new QChart();
+    pieChart2Pro   = new QChart();
+    propowerChart  = new QChart();
+    storageChart   = new QChart();
+    energeChart    = new QChart();
+    powerChart     = new QChart();
     connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::onPushButtonClicked);
     connect(ui->windDataButton, &QPushButton::clicked, this, &MainWindow::onWindDataButtonClicked);
     connect(ui->test2button, &QPushButton::clicked, this, &MainWindow::onTestButtonClicked);
@@ -124,6 +127,7 @@ void MainWindow::initPropowerChart(QVector<double> arr1, QVector<double> arr2)
     propowerChart->addSeries(series1);
     propowerChart->addSeries(series2);
     propowerChart->setTitle("propower");
+    propowerChart->createDefaultAxes();
 }
 
 void MainWindow::propowerDisplay()
@@ -156,55 +160,134 @@ void MainWindow::onWindDataButtonClicked()
     timerId = startTimer(1000);
 }
 
+QString MainWindow::pingYiViewDisplay()
+{
+    ApiCaller apiCaller;
+    apiCaller.sendRequest("/response");
+    int responseCnt = apiCaller.getResult()["cnt"].toInt();
+    qDebug() << responseCnt;
+    apiCaller.sendRequest("/main");
+    apiCaller.sendRequest("/stablizate");
+    QJsonObject res = apiCaller.getResult();
+    QString status = res["status"].toString();
+    QVector<double> proPowerData, stbPowerData, fnPowerData;
+    if(status == "yes") {
+        proPowerData = JsonProcess::toDoubleArray(res, "propowerData");
+        stbPowerData = JsonProcess::toDoubleArray(res, "stbpowerData");
+        fnPowerData  = JsonProcess::toDoubleArray(res, "fnpowerData");
+        ui->idealPingyiText->setText("理想平抑："+QString::number(stbPowerData.back()));
+        ui->realPingyiText->setText("实际平抑："+QString::number(fnPowerData.back()));
+        ui->nullPingyiText->setText("未平抑："+QString::number(proPowerData.back()));
+    } else {
+        proPowerData = JsonProcess::toDoubleArray(res, "propowerData");
+        ui->nullPingyiText->setText("未平抑："+QString::number(proPowerData.back()));
+    }
+    initLineChart2(proPowerData, stbPowerData, fnPowerData);
+    ui->pingyiView->setChart(lineChart2);
+    return status;
+}
+
+void MainWindow::bodongViewDisplay()
+{
+    ApiCaller apiCaller;
+    apiCaller.sendRequest("/Volatility");
+    QJsonObject res = apiCaller.getResult();
+    QVector<double> vol1Data = JsonProcess::toDoubleArray(res, "vol1Data"),
+                    vol2Data = JsonProcess::toDoubleArray(res, "vol2Data"),
+                    vol3Data = JsonProcess::toDoubleArray(res, "vol3Data");
+    initLineChart3(vol1Data, vol2Data, vol3Data);
+    ui->bodongView->setChart(lineChart3);
+    ui->realBodongText->setText("实际波动："+QString::number(vol3Data.back()));
+}
+
+void MainWindow::windDataProDisplay()
+{
+    ApiCaller apiCaller;
+    apiCaller.sendRequest("/winddatapro");
+    double speed = apiCaller.getResult()["speedDatapro"].toDouble(),
+           dir   = apiCaller.getResult()["dirDatapro"].toDouble();
+    initPieChartPro(speed);
+    initPieChart2Pro(dir);
+    ui->speedView2->setChart(pieChartPro);
+    ui->dirView2->setChart(pieChart2Pro);
+    ui->speed_2->setText(QString::number(speed)+"m/s");
+    ui->dir_2->setText(QString::number(dir)+"°");
+}
+
+void MainWindow::storageViewDisplay(const QJsonObject& obj)
+{
+    QVector<double> storageData = JsonProcess::toDoubleArray(obj, "storagepowerData");
+    initStorageChart(storageData);
+    ui->storageView->setChart(storageChart);
+}
+
+void MainWindow::energeViewDisplay(const QJsonObject& obj)
+{
+    QVector<double> energeData = JsonProcess::toDoubleArray(obj, "compressed_airpowerrData");
+    initEnergeChart(energeData);
+    ui->energeView->setChart(energeChart);
+}
+
+void MainWindow::powerViewDisplay(const QJsonObject& obj)
+{
+    QVector<double> powerData = JsonProcess::toDoubleArray(obj, "free_wheelpowerData");
+    initPowerChart(powerData);
+    ui->powerproView->setChart(powerChart);
+}
+
+void MainWindow::initStorageChart(QVector<double> arr)
+{
+    storageChart->removeAllSeries();
+    QLineSeries* series = new QLineSeries();
+    int i = 0;
+    for(auto& x: arr) {
+        series->append(i++, x);
+    }
+    series->setUseOpenGL(true);
+    storageChart->addSeries(series);
+    storageChart->createDefaultAxes();
+}
+
+void MainWindow::initEnergeChart(QVector<double> arr)
+{
+    energeChart->removeAllSeries();
+    QLineSeries* series = new QLineSeries();
+    int i = 0;
+    for(auto& x: arr) {
+        series->append(i++, x);
+    }
+    series->setUseOpenGL(true);
+    energeChart->addSeries(series);
+    energeChart->createDefaultAxes();
+}
+
+void MainWindow::initPowerChart(QVector<double> arr)
+{
+    powerChart->removeAllSeries();
+    QLineSeries* series = new QLineSeries();
+    int i = 0;
+    for(auto& x: arr) {
+        series->append(i++, x);
+    }
+    series->setUseOpenGL(true);
+    powerChart->addSeries(series);
+    powerChart->createDefaultAxes();
+}
+
 void MainWindow::onTestButtonClicked()
 {
     QTimer* timer = new QTimer(this);
     timer->start(1000);
     connect(timer, &QTimer::timeout,[&]{
+        QString status = pingYiViewDisplay();
+        if(status == "yes") {bodongViewDisplay();}
+        windDataProDisplay();
         ApiCaller apiCaller;
-        ApiCaller apiCaller2;
-        apiCaller.sendRequest("/response");
-        int responseCnt = apiCaller.getResult()["cnt"].toInt();
-        qDebug() << responseCnt;
-        apiCaller.sendRequest("/main");
-        apiCaller.sendRequest("/stablizate");
+        apiCaller.sendRequest("/storage");
         QJsonObject res = apiCaller.getResult();
-        QString status = res["status"].toString();
-        QVector<double> proPowerData, stbPowerData, fnPowerData;
-        if(status == "yes") {
-            proPowerData = JsonProcess::toDoubleArray(res, "propowerData");
-            stbPowerData = JsonProcess::toDoubleArray(res, "stbpowerData");
-            fnPowerData  = JsonProcess::toDoubleArray(res, "fnpowerData");
-            ui->idealPingyiText->setText("理想平抑："+QString::number(stbPowerData.back()));
-            ui->realPingyiText->setText("实际平抑："+QString::number(fnPowerData.back()));
-            ui->nullPingyiText->setText("未平抑："+QString::number(proPowerData.back()));
-        } else {
-            proPowerData = JsonProcess::toDoubleArray(res, "propowerData");
-            ui->nullPingyiText->setText("未平抑："+QString::number(proPowerData.back()));
-        }
-        initLineChart2(proPowerData, stbPowerData, fnPowerData);
-        ui->pingyiView->setChart(lineChart2);
-        if(status == "yes"){
-            apiCaller2.sendRequest("/Volatility");
-            res = apiCaller2.getResult();
-            qDebug() << res;
-            QVector<double> vol1Data = JsonProcess::toDoubleArray(res, "vol1Data"),
-                            vol2Data = JsonProcess::toDoubleArray(res, "vol2Data"),
-                            vol3Data = JsonProcess::toDoubleArray(res, "vol3Data");
-            initLineChart3(vol1Data, vol2Data, vol3Data);
-            ui->bodongView->setChart(lineChart3);
-            ui->realBodongText->setText("实际波动："+QString::number(vol3Data.back()));
-        }
-        apiCaller.sendRequest("/winddatapro");
-        double speed = apiCaller.getResult()["speedDatapro"].toDouble(),
-               dir   = apiCaller.getResult()["dirDatapro"].toDouble();
-        qDebug() << speed <<  " " << dir;
-        initPieChartPro(speed);
-        initPieChart2Pro(dir);
-        ui->speedView2->setChart(pieChartPro);
-        ui->dirView2->setChart(pieChart2Pro);
-        ui->speed_2->setText(QString::number(speed)+"m/s");
-        ui->dir_2->setText(QString::number(dir)+"°");
+        storageViewDisplay(res);
+        energeViewDisplay(res);
+        powerViewDisplay(res);
     });
 }
 
